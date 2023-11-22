@@ -56,5 +56,14 @@ VOLUME /myvolume
 # 将你的项目文件复制到容器中
 COPY ./tool_chain /workspace/tool_chain
 
+# 主机使用 split 命令分割压缩文件 因为github现在文件大小
+# split -b 50M gcc-linaro-6.3.1-2017.05-x86_64_aarch64-linux-gnu.tar.gz gcc-linaro-6.3.1-2017.05-x86_64_aarch64-linux-gnu-part-
+
+# 合并分卷文件
+RUN cat /workspace/tool_chain/gcc-linaro-6.3.1-2017.05-x86_64_aarch64-linux-gnu-part-* > /workspace/tool_chain/gcc-linaro-6.3.1-2017.05-x86_64_aarch64-linux-gnu.tar.gz
+
+# 解压所需文件
+RUN tar -xzf /workspace/tool_chain/gcc-linaro-6.3.1-2017.05-x86_64_aarch64-linux-gnu.tar.gz -C /workspace/tool_chain
+
 # 定编译工具链的绝对路径
 ENV PATH /workspace/tool_chain/gcc-linaro-6.3.1-2017.05-x86_64_aarch64-linux-gnu/bin:$PATH
