@@ -18,6 +18,8 @@ RUN apt-get install -y \
 vim git ssh unzip curl \
 # 基础工具2
 make gcc cmake bear \
+# 命令行补全
+bash-completion \
 # python环境
 python3 python3-pip \
 # 语言环境
@@ -67,3 +69,6 @@ RUN tar -xzf /workspace/tool_chain/gcc-linaro-6.3.1-2017.05-x86_64_aarch64-linux
 
 # 定编译工具链的绝对路径
 ENV PATH /workspace/tool_chain/gcc-linaro-6.3.1-2017.05-x86_64_aarch64-linux-gnu/bin:$PATH
+
+# 解除 .bashrc 文件中关于 bash_completion 的注释
+RUN sed -i '/if \[ -f \/etc\/bash_completion \] && ! shopt -oq posix; then/,/fi/s/^#//g' /root/.bashrc
