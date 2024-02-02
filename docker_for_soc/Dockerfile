@@ -20,6 +20,8 @@ vim git ssh unzip curl \
 make gcc cmake bear \
 # 命令行补全
 bash-completion \
+# curl chatgpt api依赖
+libcurl4-openssl-dev libcjson-dev \
 # python环境
 python3 python3-pip \
 # 语言环境
