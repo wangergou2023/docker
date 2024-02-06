@@ -24,6 +24,8 @@ bash-completion \
 libcurl4-openssl-dev libcjson-dev \
 # python环境
 python3 python3-pip \
+# buildroot编译相关如下
+rsync \
 # 语言环境
 locales language-selector-common \
 # uboot kernel编译相关如下
