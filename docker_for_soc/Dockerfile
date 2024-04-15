@@ -15,7 +15,7 @@ RUN apt-get update
 # 安装必要的工具
 RUN apt-get install -y \
 # 基础工具1
-vim git ssh unzip curl \
+vim git ssh unzip curl tree \
 # 基础工具2
 make gcc cmake bear \
 # 命令行补全
@@ -76,3 +76,14 @@ ENV PATH /workspace/tool_chain/gcc-linaro-6.3.1-2017.05-x86_64_aarch64-linux-gnu
 
 # 解除 .bashrc 文件中关于 bash_completion 的注释
 RUN sed -i '/if \[ -f \/etc\/bash_completion \] && ! shopt -oq posix; then/,/fi/s/^#//g' /root/.bashrc
+
+# 下载并安装Go
+RUN curl -LO "https://golang.google.cn/dl/go1.22.0.linux-amd64.tar.gz" && \
+    tar -C /usr/local -xzf go1.22.0.linux-amd64.tar.gz
+
+# 添加Go到PATH环境变量
+ENV PATH $PATH:/usr/local/go/bin
+
+# 验证Go安装
+RUN go version
+
