@@ -22,8 +22,6 @@ make gcc cmake bear \
 bash-completion \
 # curl chatgpt api依赖
 libcurl4-openssl-dev libcjson-dev \
-# python环境
-python3 python3-pip \
 # buildroot编译相关如下
 rsync \
 # 语言环境
@@ -36,20 +34,28 @@ locales language-selector-common \
 bison flex libssl-dev dpkg-dev lzop \
 device-tree-compiler u-boot-tools libncurses-dev \
 bc liblz4-tool kmod cpio \
+lsof \
 # rootfs
 sudo binfmt-support qemu-user-static
 
-# 解决找不到python python2
-RUN ln -s /usr/bin/python3 /usr/bin/python
+# 安装 Python 3.11
+RUN apt-get install -y software-properties-common \
+  && add-apt-repository ppa:deadsnakes/ppa \
+  && apt-get update \
+  && apt-get install -y python3.11 python3.11-distutils python3.11-dev \
+  && update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.11 1 \
+  && update-alternatives --install /usr/bin/python python /usr/bin/python3.11 1 \
+  && curl -sS https://bootstrap.pypa.io/get-pip.py | python3.11
+
+# 解决找不到python2
 RUN ln -s /usr/bin/python3 /usr/bin/python2
 
-#清理不再需要的软件包，以减少镜像大小
-RUN apt-get autoremove\
-#清除 APT 的缓存和临时文件，进一步减少镜像大小
-&& apt-get clean \
-&& rm -rf /var/lib/apt/lists/*
+# 清理不再需要的软件包，以减少镜像大小
+RUN apt-get autoremove -y \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/*
 
-#配置 zh_CN.utf8 语言环境
+# 配置 zh_CN.utf8 语言环境
 RUN localedef -c -f UTF-8 -i zh_CN zh_CN.utf8
 ENV LANG zh_CN.utf8
 
@@ -66,13 +72,13 @@ COPY ./tool_chain /workspace/tool_chain
 # split -b 50M gcc-linaro-6.3.1-2017.05-x86_64_aarch64-linux-gnu.tar.gz gcc-linaro-6.3.1-2017.05-x86_64_aarch64-linux-gnu-part-
 
 # 合并分卷文件
-RUN cat /workspace/tool_chain/gcc-linaro-6.3.1-2017.05-x86_64_aarch64-linux-gnu-part-* > /workspace/tool_chain/gcc-linaro-6.3.1-2017.05-x86_64_aarch64-linux-gnu.tar.gz
+# RUN cat /workspace/tool_chain/gcc-linaro-6.3.1-2017.05-x86_64_aarch64-linux-gnu-part-* > /workspace/tool_chain/gcc-linaro-6.3.1-2017.05-x86_64_aarch64-linux-gnu.tar.gz
 
 # 解压所需文件
-RUN tar -xzf /workspace/tool_chain/gcc-linaro-6.3.1-2017.05-x86_64_aarch64-linux-gnu.tar.gz -C /workspace/tool_chain
+# RUN tar -xzf /workspace/tool_chain/gcc-linaro-6.3.1-2017.05-x86_64_aarch64-linux-gnu.tar.gz -C /workspace/tool_chain
 
 # 定编译工具链的绝对路径
-ENV PATH /workspace/tool_chain/gcc-linaro-6.3.1-2017.05-x86_64_aarch64-linux-gnu/bin:$PATH
+# ENV PATH /workspace/tool_chain/gcc-linaro-6.3.1-2017.05-x86_64_aarch64-linux-gnu/bin:$PATH
 
 # 解除 .bashrc 文件中关于 bash_completion 的注释
 RUN sed -i '/if \[ -f \/etc\/bash_completion \] && ! shopt -oq posix; then/,/fi/s/^#//g' /root/.bashrc
