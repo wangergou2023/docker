@@ -36,7 +36,7 @@ device-tree-compiler u-boot-tools libncurses-dev \
 bc liblz4-tool kmod cpio \
 lsof \
 # rootfs
-sudo binfmt-support qemu-user-static
+sudo binfmt-support qemu-user-static mtd-utils squashfs-tools
 
 # 安装 Python 3.11
 RUN apt-get install -y software-properties-common \
