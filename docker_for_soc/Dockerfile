@@ -36,7 +36,9 @@ device-tree-compiler u-boot-tools libncurses-dev \
 bc liblz4-tool kmod cpio \
 lsof \
 # rootfs
-sudo binfmt-support qemu-user-static mtd-utils squashfs-tools
+sudo binfmt-support qemu-user-static
+
+RUN apt-get install -y mtd-utils squashfs-tools
 
 # 安装 Python 3.11
 RUN apt-get install -y software-properties-common \
@@ -66,7 +68,7 @@ WORKDIR /workspace
 VOLUME /myvolume
 
 # 将你的项目文件复制到容器中
-COPY ./tool_chain /workspace/tool_chain
+# COPY ./tool_chain /workspace/tool_chain
 
 # 主机使用 split 命令分割压缩文件 因为github现在文件大小
 # split -b 50M gcc-linaro-6.3.1-2017.05-x86_64_aarch64-linux-gnu.tar.gz gcc-linaro-6.3.1-2017.05-x86_64_aarch64-linux-gnu-part-
